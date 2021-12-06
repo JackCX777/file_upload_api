@@ -1,0 +1,56 @@
+version: "3.4"
+
+services:
+
+  telega-db:
+    image: postgres:12-alpine
+    container_name: telega-db
+    restart: always
+    volumes:
+      - telega-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    env_file:
+      - ./.env
+
+  telega-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telega-app
+    command: bash gunicorn.sh
+    environment:
+      WAIT-HOSTS: telega-db
+    volumes:
+      - .:/home/app/telega
+    ports:
+      - 8000:8000
+    tty: true
+    restart: on-failure
+    depends_on:
+      - telega-db
+
+
+  telega-celery:
+    build: .
+    container_name: telega-celery
+    command: bash celery.sh
+    restart: always
+    volumes:
+      - .:/home/app/telega
+    env_file:
+      - ./.env
+    depends_on:
+      - telega-db
+      - redis
+
+  redis:
+    image: redis:5-alpine
+
+
+volumes:
+  telega-db-data:
+
+networks:
+  default:
+    name: telega-network

@@ -147,10 +147,29 @@ scratch_01.py
 # DB
 postgresql/
 
+# Docker
+.dockerignore
+docker-compose-dev.yml
+docker-compose-prod.yml
+Dockerfile
+
+# Ignore markdown files are included in the context except README files other than README-secret.md
+*.md
+!README*.md
+README-secret.md
+
+# Ignore .git and .cache catalogs
+.git
+.cache
+.gitignore
+
+# tz
+*.docx
+
 # Django drafts
 _django_drafts/
 
-# Django media
+# Media
 */media/*
 !*/media/
 uploads/

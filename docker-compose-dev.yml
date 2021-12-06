@@ -1,0 +1,163 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: file_upload_postgres_container
+    image: postgres:latest
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+#    env_file:
+#      - ./.env
+    environment:
+      POSTGRES_DB: "file_upload_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - file_upload_postgres_volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+
+  pgadmin:
+    container_name: file_upload_pgadmin_container
+    image: dpage/pgadmin4:latest
+#    env_file:
+#      - ./.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@localhost.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    depends_on:
+      - postgres
+    volumes:
+      - file_upload_pgadmin_volume:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+  file_upload:
+    container_name: file_upload_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "
+        python ./src/manage.py migrate &&
+        python ./src/manage.py createsuperuser --noinput &&
+        python ./src/manage.py runserver 0.0.0.0:8000
+      "
+#    env_file:
+#      - ./.env
+    environment:
+#      DJANGO_SETTINGS_MODULE: src.config.settings.py
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: file_upload_postgres_container
+      DB_PORT: ${POSTGRES_PORT}
+      DJANGO_SECRET_KEY: django-insecure-(rk+_+7i%dbx_p8!n86$$1ikdvlkhj_wykwer!bpk$$40u%x$$$$ag
+      DJANGO_SUPERUSER_USERNAME: admin
+      DJANGO_SUPERUSER_EMAIL: admin@example.com
+      DJANGO_SUPERUSER_PASSWORD: testpass
+    depends_on:
+      - postgres
+      - pgadmin
+    volumes:
+      - file_upload_source_volume:/app
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  redis:
+    container_name: file_upload_redis_server_container
+#    image: redis:alpine
+    image: redis:latest
+#    command: redis-server
+#    env_file:
+#      - ./.env
+#    environment:
+#      REDIS_HOST: file_upload_redis_db
+#      REDIS_PORT: 6379
+#      REDIS_DB: 0
+#      REDIS_PASSWORD: secretpass
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  celery:
+    container_name: file_upload_celery_container
+    build:
+      context: .
+    command: >
+      sh -c 'cd ./src && celery -A config worker'
+#    command: ['celery', '-A', 'src/config', '-l', 'INFO', '-B']
+    #command: ['celery', '-A', 'config', 'worker', '-B']
+    volumes:
+      - file_upload_source_volume:/app
+    environment:
+      DJANGO_SECRET_KEY: django-insecure-(rk+_+7i%dbx_p8!n86$$1ikdvlkhj_wykwer!bpk$$40u%x$$$$ag
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: file_upload_postgres_container
+      DB_PORT: ${POSTGRES_PORT}
+#    environment:
+#      REDIS_HOST: file_upload_redis_db
+#      REDIS_HOST: file_upload_redis_server_container
+#      REDIS_PORT: 6379
+#      REDIS_DB: 0
+#      REDIS_PASSWORD: secretpass
+    depends_on:
+      - file_upload
+      - redis
+#    links:
+#      - redis
+#    volumes:
+#      - .:/code
+#      - .:/app/src
+#      - file_upload_celery_volume:/app
+    restart: unless-stopped
+
+volumes:
+  file_upload_postgres_volume:
+  file_upload_pgadmin_volume:
+  file_upload_source_volume:
+  file_upload_celery_volume:
