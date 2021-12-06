@@ -45,7 +45,6 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = [
-    # '127.0.0.1',
     '0.0.0.0'
 ]
 
@@ -143,10 +142,9 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 # Specify data format
-# USE_L10N = True
+
 USE_L10N = False
 DATE_FORMAT = 'd.m.Y'
-
 USE_TZ = True
 
 
@@ -214,58 +212,13 @@ SWAGGER_SETTINGS = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    # 'ROTATE_REFRESH_TOKENS': False,
-    # 'BLACKLIST_AFTER_ROTATION': False,
-    # 'UPDATE_LAST_LOGIN': False,
-    #
-    # 'ALGORITHM': 'HS256',
-    # 'SIGNING_KEY': settings.SECRET_KEY,
-    # 'VERIFYING_KEY': None,
-    # 'AUDIENCE': None,
-    # 'ISSUER': None,
-    # 'JWK_URL': None,
-    # 'LEEWAY': 0,
-    #
-    # 'AUTH_HEADER_TYPES': ('Bearer',),
-    # 'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    # 'USER_ID_FIELD': 'id',
-    # 'USER_ID_CLAIM': 'user_id',
-    # 'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-    #
-    # 'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    # 'TOKEN_TYPE_CLAIM': 'token_type',
-    #
-    # 'JTI_CLAIM': 'jti',
-    #
-    # 'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    # 'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    # 'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 
-# Redis
-
-# REDIS_HOST = os.environ.get('REDIS_HOST')
-# REDIS_PORT = os.environ.get('REDIS_PORT')
-# REDIS_DB = os.environ.get('REDIS_DB')
-# REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
-
-
 # Celery
-# BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
-
-# CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
-# CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
-
-# CELERY_BROKER_URL = 'redis://0.0.0.0:6379'
-# CELERY_RESULT_BACKEND = 'redis://0.0.0.0:6379'
-
-#CELERY_BROKER_URL = 'redis://file_upload_celery_container:6379/0'
-#CELERY_RESULT_BACKEND = 'redis://file_upload_celery_container:6379/0'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Moscow'
-
 CELERY_IMPORTS = ('file_upload.tasks',)

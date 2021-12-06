@@ -11,4 +11,3 @@ urlpatterns = [
     path('file/upload/', api_views.FileUploadViewSet.as_view({'post': 'create'})),
     path('file/result/<int:pk>/', api_views.FileResultViewSet.as_view({'get': 'retrieve'})),
 ]
-

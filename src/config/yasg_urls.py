@@ -6,13 +6,15 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="New app name",
+      title="File upload API",
       default_version='v1',
-      description="New app description",
+      description="This API provides for uploading *.xls and *.xlsx files, some post-processing of these files "
+                  "and getting the result of processing. The API also provides associated endpoints for registration, "
+                  "user list retrieval, Bearer JSON Web Token retrieval, verification and refresh of this token.",
       license=openapi.License(name="BSD License"),
    ),
    public=True,
-   permission_classes=(permissions.AllowAny,),
+   permission_classes=(permissions.AllowAny, ),
 )
 
 urlpatterns = [

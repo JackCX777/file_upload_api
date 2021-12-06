@@ -1,8 +1,6 @@
 import os
 from time import sleep
 
-# from django.conf import settings
-
 from xlrd import open_workbook
 from openpyxl import load_workbook
 
@@ -89,7 +87,7 @@ GET_TARGET_COLUMNS = {
 
 def get_target_columns(path: str) -> callable:
     """
-    Calls a function suitable for expansion
+    Calls the function suitable for extension
     """
     return GET_TARGET_COLUMNS.get(get_file_extension(path))(path)
 
@@ -99,7 +97,10 @@ def get_result(path: str) -> str:
     Gets the required final result.
     """
     columns = get_target_columns(path)
+
+    # This sleep() function is added here only to emulate long processing of the data.
     sleep(30)
+
     if len(columns.get('before')) < len(columns.get('after')):
         for val in columns.get('after'):
             if val not in set(columns.get('before')):

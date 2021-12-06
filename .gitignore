@@ -156,4 +156,4 @@ _django_drafts/
 uploads/
 
 # Django migrations
-**/migrations/
+*/migrations/*

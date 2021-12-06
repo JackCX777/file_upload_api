@@ -10,7 +10,7 @@ from .services.validators import UniqueFileValidator
 
 class UserSerializer(serializers.ModelSerializer):
     """
-    Answers serializer
+    User serializer.
     """
 
     class Meta:
@@ -24,6 +24,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TokenObtainPairResponseSerializer(serializers.Serializer):
+    """
+    Token creation serializer.
+    """
     access = serializers.CharField()
     refresh = serializers.CharField()
 
@@ -35,6 +38,9 @@ class TokenObtainPairResponseSerializer(serializers.Serializer):
 
 
 class TokenVerifyResponseSerializer(serializers.Serializer):
+    """
+    Token verification serializer.
+    """
     def create(self, validated_data):
         raise NotImplementedError()
 
@@ -43,6 +49,9 @@ class TokenVerifyResponseSerializer(serializers.Serializer):
 
 
 class TokenRefreshResponseSerializer(serializers.Serializer):
+    """
+    Token refresh serializer.
+    """
     access = serializers.CharField()
 
     def create(self, validated_data):
@@ -54,7 +63,7 @@ class TokenRefreshResponseSerializer(serializers.Serializer):
 
 class FileUploadSerializer(serializers.ModelSerializer):
     """
-    Upload file
+    File uploading serializer.
     """
 
     class Meta:
@@ -69,19 +78,13 @@ class FileUploadSerializer(serializers.ModelSerializer):
             }
         }
 
-    # def create(self, validated_data):
-    #     instance = super(FileUploadSerializer, self).create(validated_data)
-    #     handle_file.delay()
-    #     return instance
-
 
 class FileResultSerializer(serializers.ModelSerializer):
     """
-    Result file 11111
+    Processing result serializer.
     """
     status = serializers.CharField(source='get_status_display')
 
     class Meta:
         model = UploadedFile
         fields = "__all__"
-

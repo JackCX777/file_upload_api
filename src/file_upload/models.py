@@ -1,8 +1,4 @@
-import os
-
 from django.db import models
-from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.conf import settings
 
 
@@ -26,7 +22,10 @@ class UploadedFile(models.Model):
         verbose_name = 'Uploaded File'
         verbose_name_plural = 'Uploaded Files'
 
-    def set_next_status(self):
+    def set_next_status(self) -> None:
+        """
+        This method provides iteration over PROCESSING_STATUSES.
+        """
         try:
             if self.status == '1':
                 self.status = next(self.status_iterator)[0]
@@ -37,10 +36,6 @@ class UploadedFile(models.Model):
             print('The final file processing status has been reached')
 
         self.save()
-        # return self
 
     def __str__(self):
         return str(self.file)
-
-
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'file_upload.settings')

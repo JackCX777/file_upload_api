@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import viewsets, permissions, status, parsers, renderers
+from rest_framework import viewsets, permissions, status, parsers
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -15,13 +15,11 @@ from .serializers import (
     FileResultSerializer,
 )
 from .models import UploadedFile
-from .services.mixins import MixedSerializer
-
 
 
 class UserBaseViewSet(viewsets.ModelViewSet):
     """
-    Base class
+    Base user viewset class
     """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
@@ -29,18 +27,21 @@ class UserBaseViewSet(viewsets.ModelViewSet):
 
 class UserRegistrationViewSet(UserBaseViewSet):
     """
-    Registration
+    The user registration endpoint.
     """
     permission_classes = (permissions.AllowAny,)
 
 
 class UserListViewSet(UserBaseViewSet):
     """
-    User list
+    The end point of the List of registered users .
     """
 
 
 class DecoratedTokenObtainPairView(TokenObtainPairView):
+    """
+    The token creation endpoint.
+    """
     permission_classes = (permissions.AllowAny,)
 
     @swagger_auto_schema(
@@ -51,6 +52,9 @@ class DecoratedTokenObtainPairView(TokenObtainPairView):
 
 
 class DecoratedTokenVerifyView(TokenVerifyView):
+    """
+    The token verification endpoint.
+    """
     permission_classes = (permissions.AllowAny,)
 
     @swagger_auto_schema(
@@ -61,6 +65,9 @@ class DecoratedTokenVerifyView(TokenVerifyView):
 
 
 class DecoratedTokenRefreshView(TokenRefreshView):
+    """
+    The token refresh endpoint.
+    """
     permission_classes = (permissions.AllowAny,)
 
     @swagger_auto_schema(
@@ -72,22 +79,17 @@ class DecoratedTokenRefreshView(TokenRefreshView):
 
 class FileUploadViewSet(viewsets.ModelViewSet):
     """
-    2222222
+    The file uploading endpoint.
+    Accepts only *.xls or *.xlsx files.
     """
     queryset = UploadedFile.objects.all()
     serializer_class = FileUploadSerializer
     parser_classes = (parsers.MultiPartParser, )
 
-    # serializer_classes_by_action = {
-    #         # 'create': FileUploadSerializer,
-    #         # 'list': FileUploadSerializer,
-    #         'retrieve': FileResultSerializer
-    #     }
-
 
 class FileResultViewSet(viewsets.ModelViewSet):
     """
-    333333
+    The processing result endpoint.
     """
     queryset = UploadedFile.objects.all()
     serializer_class = FileResultSerializer
