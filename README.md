@@ -38,15 +38,24 @@ The following technologies are used to implement the service:
 #### Note: 
 
 For unauthorised users, only the registration subpoint is available.
+
 To obtain a token, you need to first register with a custom username and password. 
 You can also use the built-in superuser account with:
+
 username: admin
+
 password: testpass
-This uses a Bearer JSON Web Token. Access token valid for 30 minutes, 
+
+This API uses a Bearer JSON Web Token. Access token valid for 30 minutes, 
 refresh token valid for 1 day.
+
 To auth by token please find the Authorize button in the top right corner,
 fill in the Value field using the following format:
-Bearer <your new access token>
+
+Bearer your_new_access_token
+
 Then click Authorize.
+
 The file uploading endpoint accepts only *.xls or *.xlsx files.
-A delay of 30 seconds is used to emulate long file processing operations.
+
+A 30 seconds delay is used to emulate long file processing operations.
