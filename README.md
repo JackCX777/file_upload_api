@@ -49,3 +49,4 @@ fill in the Value field using the following format:
 Bearer <your new access token>
 Then click Authorize.
 The file uploading endpoint accepts only *.xls or *.xlsx files.
+A delay of 30 seconds is used to emulate long file processing operations.
